@@ -13,7 +13,6 @@ import xbmc
 from metadatautils import kodi_constants
 from resources.lib.utils import create_main_entry, KODI_VERSION
 
-
 class Movies(object):
     '''all movie widgets provided by the script'''
 
@@ -40,6 +39,7 @@ class Movies(object):
             (label_prefix + self.addon.getLocalizedString(32048), "random&mediatype=movies&tag=%s" % tag, icon),
             (label_prefix + self.addon.getLocalizedString(32066), "unwatched&mediatype=movies&tag=%s" % tag, icon),
             (label_prefix + self.addon.getLocalizedString(32046), "top250&mediatype=movies&tag=%s" % tag, icon),
+            (label_prefix + self.addon.getLocalizedString(32085), "mylist&mediatype=movies&tag=%s" % tag, icon),
             (label_prefix + xbmc.getLocalizedString(135),
              "browsegenres&mediatype=movies&tag=%s" % tag, "DefaultGenres.png")
         ]
@@ -106,6 +106,15 @@ class Movies(object):
             filters.append({"operator": "contains", "field": "tag", "value": self.options["tag"]})
         return self.metadatautils.kodidb.movies(sort=kodi_constants.SORT_RATING, filters=filters,
                                            limits=(0, self.options["limit"]))
+
+    def mylist(self):
+        """ get mylist """
+        filters = []
+        if self.options["hide_watched"]:
+            filters.append(kodi_constants.FILTER_UNWATCHED)
+        filters.append({"operator": "contains", "field": "tag", "value": 'mylist'})
+        all_items = self.metadatautils.kodidb.movies(filters=filters)
+        return sorted(all_items, key=itemgetter("dateadded"), reverse=True)[:self.options["limit"]]
 
     def recent(self):
         ''' get recently added movies '''

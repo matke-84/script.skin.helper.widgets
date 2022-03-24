@@ -36,6 +36,7 @@ class Tvshows(object):
             (label_prefix + self.addon.getLocalizedString(32037), "recommended&mediatype=tvshows&tag=%s" % tag, icon),
             (label_prefix + self.addon.getLocalizedString(32041), "random&mediatype=tvshows&tag=%s" % tag, icon),
             (label_prefix + self.addon.getLocalizedString(32047), "top250&mediatype=tvshows&tag=%s" % tag, icon),
+            (label_prefix + self.addon.getLocalizedString(32086), "mylist&mediatype=tvshows&tag=%s" % tag, icon),
             (label_prefix + xbmc.getLocalizedString(135), "browsegenres&mediatype=tvshows&tag=%s" % tag, icon),
         ]
         if not tag:
@@ -219,6 +220,15 @@ class Tvshows(object):
         # return the list sorted by rating
         tvshows = sorted(all_items, key=itemgetter("rating"), reverse=True)
         return self.metadatautils.process_method_on_list(self.process_tvshow, tvshows)
+
+    def mylist(self):
+        """ get mylist """
+        filters = []
+        if self.options["hide_watched"]:
+            filters.append(kodi_constants.FILTER_UNWATCHED)
+        filters.append({"operator": "contains", "field": "tag", "value": 'mylist'})
+        all_items = self.metadatautils.kodidb.tvshows(filters=filters)
+        return sorted(all_items, key=itemgetter("dateadded"), reverse=True)[:self.options["limit"]]
 
     def top250(self):
         ''' get imdb top250 tvshows in library '''

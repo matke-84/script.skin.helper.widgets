@@ -45,7 +45,7 @@ msgid "Similar Movies"
 msgstr ""
 
 msgctxt "#32007"
-msgid "In progress and Recommended Media"
+msgid "In progress and recommended Media"
 msgstr ""
 
 msgctxt "#32008"
@@ -125,15 +125,15 @@ msgid "Browse albums instead of playing for album widgets"
 msgstr ""
 
 msgctxt "#32027"
-msgid "In-progress episodes"
+msgid "In progress Episodes"
 msgstr ""
 
 msgctxt "#32028"
-msgid "In-progress movies"
+msgid "In progress Movies"
 msgstr ""
 
 msgctxt "#32029"
-msgid "In-progress and recommended movies"
+msgid "In progress and recommended Movies"
 msgstr ""
 
 msgctxt "#32030"
@@ -165,31 +165,31 @@ msgid "Only use in-progress shows in next episodes widget"
 msgstr ""
 
 msgctxt "#32037"
-msgid "Recommended Tv Shows"
+msgid "Recommended TV Shows"
 msgstr ""
 
 msgctxt "#32038"
-msgid "Recently added movies"
+msgid "Recently added Movies"
 msgstr ""
 
 msgctxt "#32039"
-msgid "Recently added episodes"
+msgid "Recently added Episodes"
 msgstr ""
 
 msgctxt "#32040"
-msgid "Recently added musicvideos"
+msgid "Recently added Musicvideos"
 msgstr ""
 
 msgctxt "#32041"
-msgid "Random Tv Shows"
+msgid "Random TV Shows"
 msgstr ""
 
 msgctxt "#32042"
-msgid "Unaired episodes"
+msgid "Unaired Episodes"
 msgstr ""
 
 msgctxt "#32043"
-msgid "Next airing episodes"
+msgid "Next airing Episodes"
 msgstr ""
 
 msgctxt "#32044"
@@ -201,15 +201,15 @@ msgid "Recently added TV shows"
 msgstr ""
 
 msgctxt "#32046"
-msgid "IMDB Top 250 movies in library"
+msgid "IMDB Top 250 Movies in library"
 msgstr ""
 
 msgctxt "#32047"
-msgid "IMDB Top 250 Tv shows in library"
+msgid "IMDB Top 250 TV Shows in library"
 msgstr ""
 
 msgctxt "#32048"
-msgid "Random movies"
+msgid "Random Movies"
 msgstr ""
 
 msgctxt "#32049"
@@ -249,15 +249,15 @@ msgid "Mixed Media"
 msgstr ""
 
 msgctxt "#32058"
-msgid "Movies and Tvshows in IMDB Top250"
+msgid "Movies and TV Shows in IMDB Top 250"
 msgstr ""
 
 msgctxt "#32059"
-msgid "Random media"
+msgid "Random Media"
 msgstr ""
 
 msgctxt "#32060"
-msgid "In progress and Random media"
+msgid "In progress and random Media"
 msgstr ""
 
 msgctxt "#32061"
@@ -265,7 +265,7 @@ msgid "In progress music videos"
 msgstr ""
 
 msgctxt "#32062"
-msgid "Random music videos"
+msgid "Random Music Videos"
 msgstr ""
 
 msgctxt "#32063"
@@ -281,7 +281,7 @@ msgid "Recommended artists"
 msgstr ""
 
 msgctxt "#32066"
-msgid "Unwatched movies"
+msgid "Unwatched Movies"
 msgstr ""
 
 msgctxt "#32067"
@@ -297,7 +297,7 @@ msgid "Recently played TV channels"
 msgstr ""
 
 msgctxt "#32070"
-msgid "In progress TV shows and movies"
+msgid "In progress TV Shows and Movies"
 msgstr ""
 
 msgctxt "#32071"
@@ -330,6 +330,46 @@ msgstr ""
 
 msgctxt "#32078"
 msgid "Recommended in Playlist"
+msgstr ""
+
+msgctxt "#32079"
+msgid "Movies and TV Shows in My List"
+msgstr ""
+
+msgctxt "#32080"
+msgid "Recent TV Shows and Movies"
+msgstr ""
+
+msgctxt "#32081"
+msgid "Popular Movies and TV Shows"
+msgstr ""
+
+msgctxt "#32082"
+msgid "New Release in Movies and TV Shows"
+msgstr ""
+
+msgctxt "#32083"
+msgid "Watch Again Movies and TV Shows"
+msgstr ""
+
+msgctxt "#32084"
+msgid "Random TV Shows and Movies"
+msgstr ""
+
+msgctxt "#32085"
+msgid "Movies in My List"
+msgstr ""
+
+msgctxt "#32086"
+msgid "TV Shows in My List"
+msgstr ""
+
+msgctxt "#32087"
+msgid "Movies and TV Shows in Genre"
+msgstr ""
+
+msgctxt "#32088"
+msgid "Similar Movies and TV Shows"
 msgstr ""
 
 msgctxt "#32163"

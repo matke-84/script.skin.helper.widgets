@@ -17,9 +17,14 @@ from resources.lib.songs import Songs
 from resources.lib.pvr import Pvr
 from resources.lib.albums import Albums
 from resources.lib.episodes import Episodes
+from datetime import date
 
 class Media(object):
     '''all media (mixed) widgets provided by the script'''
+
+    YEAR_TODAY_MINUS_FOUR = str(date.today().year - 4)
+    FILTER_LAST_THREE_YEARS = {"operator": "greaterthan", "field": "year", "value": YEAR_TODAY_MINUS_FOUR}
+    SORT_VOTES = {"method": "votes", "order": "descending"}
 
     def __init__(self, addon, metadatautils, options):
         '''Initializations pass our common classes and the widget options as arguments'''
@@ -38,13 +43,21 @@ class Media(object):
         all_items = [
             (self.addon.getLocalizedString(32011), "inprogress&mediatype=media", "DefaultMovies.png"),
             (self.addon.getLocalizedString(32070), "inprogressshowsandmovies&mediatype=media", "DefaultMovies.png"),
-            (self.addon.getLocalizedString(32005), "recent&mediatype=media", "DefaultMovies.png"),
-            (self.addon.getLocalizedString(32004), "recommended&mediatype=media", "DefaultMovies.png"),
             (self.addon.getLocalizedString(32007), "inprogressandrecommended&mediatype=media", "DefaultMovies.png"),
             (self.addon.getLocalizedString(32060), "inprogressandrandom&mediatype=media", "DefaultMovies.png"),
-            (self.addon.getLocalizedString(32022), "similar&mediatype=media", "DefaultMovies.png"),
+            (self.addon.getLocalizedString(32005), "recent&mediatype=media", "DefaultMovies.png"),
+            (self.addon.getLocalizedString(32080), "recentshowsandmovies&mediatype=media", "DefaultMovies.png"),
             (self.addon.getLocalizedString(32059), "random&mediatype=media", "DefaultMovies.png"),
+            (self.addon.getLocalizedString(32084), "randomshowsandmovies&mediatype=media", "DefaultMovies.png"),
+            (self.addon.getLocalizedString(32083), "watchagainshowsandmovies&mediatype=media", "DefaultMovies.png"),
+            (self.addon.getLocalizedString(32082), "newrelease&mediatype=media", "DefaultMovies.png"),
             (self.addon.getLocalizedString(32058), "top250&mediatype=media", "DefaultMovies.png"),
+            (self.addon.getLocalizedString(32004), "recommended&mediatype=media", "DefaultMovies.png"),
+            (self.addon.getLocalizedString(32022), "similar&mediatype=media", "DefaultMovies.png"),
+            (self.addon.getLocalizedString(32088), "similarshowsandmovies&mediatype=media", "DefaultMovies.png"),
+            (self.addon.getLocalizedString(32079), "mylist&mediatype=media", "DefaultMovies.png"),
+            (self.addon.getLocalizedString(32081), "popular&mediatype=media", "DefaultMovies.png"),
+            (self.addon.getLocalizedString(32087), "forgenre&mediatype=media", "DefaultMovies.png"),
             (self.addon.getLocalizedString(32001), "favourites&mediatype=media", "DefaultMovies.png"),
             (self.addon.getLocalizedString(32075), "playlistslisting&mediatype=media",
              "DefaultMovies.png"),
@@ -92,6 +105,17 @@ class Media(object):
         all_items = self.sort_by_recommended(movies+tvshows)
         return sorted(all_items, key=itemgetter("recommendedscore"), reverse=True)[:self.options["limit"]]
 
+    def mylist(self):
+        """ get mylist """
+        filters = []
+        if self.options["hide_watched"]:
+            filters.append(kodi_constants.FILTER_UNWATCHED)
+        filters.append({"operator": "contains", "field": "tag", "value": 'mylist'})
+        all_items = self.metadatautils.kodidb.movies(filters=filters)
+        all_items += self.metadatautils.process_method_on_list(self.tvshows.process_tvshow,
+                                                               self.metadatautils.kodidb.tvshows(filters=filters))
+        return sorted(all_items, key=itemgetter("dateadded"), reverse=True)[:self.options["limit"]]
+
     def refplaylist(self):
         '''get items similar to items in playlists '''
         movie_label = self.options.get("movie_label").replace('[and]', '&')
@@ -133,6 +157,70 @@ class Media(object):
         all_items += self.pvr.recordings()
         return sorted(all_items, key=itemgetter("dateadded"), reverse=True)[:self.options["limit"]]
 
+    def recentshowsandmovies(self):
+        """ get recently added movies and tvshows """
+        all_items = self.movies.recent()
+        all_items += self.tvshows.recent()
+        return sorted(all_items, key=itemgetter("dateadded"), reverse=True)[:self.options["limit"]]
+
+    def popular(self):
+        """get popular movies and tv shows based on new and most voted, arranged by date added and year of release"""
+        filters = []
+        if self.options["hide_watched"]:
+            filters.append(kodi_constants.FILTER_UNWATCHED)
+        all_items = self.metadatautils.kodidb.movies(
+            filters=filters + [Media.FILTER_LAST_THREE_YEARS],
+            sort=Media.SORT_VOTES,
+            limits=(0, self.options["limit"]))
+        all_items += self.metadatautils.process_method_on_list(self.tvshows.process_tvshow,
+                                                               self.metadatautils.kodidb.tvshows(
+                                                                   filters=filters + [Media.FILTER_LAST_THREE_YEARS],
+                                                                   sort=Media.SORT_VOTES,
+                                                                   limits=(0, self.options["limit"])))
+        # first sort by dateadded to mix tv and movies and maybe better release indication, then verify by year
+        return sorted(sorted(all_items, key=itemgetter("dateadded"), reverse=True)
+                      [:self.options["limit"]], key=itemgetter("year"), reverse=True)
+
+    def newrelease(self):
+        """ get newly released movies and tvshows based on added recently and released in last 3 years"""
+        filters = [Media.FILTER_LAST_THREE_YEARS]
+        if self.options["hide_watched"]:
+            filters.append(kodi_constants.FILTER_UNWATCHED)
+        if self.options.get("tag"):
+            filters.append({"operator": "contains", "field": "tag", "value": self.options["tag"]})
+        # first we take all recently added and released in last 3 years capped by limit
+        all_items = self.metadatautils.kodidb.movies(sort=kodi_constants.SORT_DATEADDED, filters=filters,
+                                                     limits=(0, self.options["limit"]))
+        all_items += self.metadatautils.process_method_on_list(
+            self.tvshows.process_tvshow,
+            self.metadatautils.kodidb.tvshows(sort=kodi_constants.SORT_DATEADDED, filters=filters,
+                                              limits=(0, self.options["limit"])))
+        # randomize to let tvshows mix with movies due to likeliness of being same year, and return sorted by year
+        return sorted(sorted(all_items, key=lambda k: random.random()), key=itemgetter("year"), reverse=True)[
+               :self.options["limit"]]
+
+    def watchagainshowsandmovies(self):
+        """ get random recently watched movies and tv shows """
+        filters = [kodi_constants.FILTER_WATCHED]
+        if self.options.get("tag"):
+            filters.append({"operator": "contains", "field": "tag", "value": self.options["tag"]})
+        all_items = self.metadatautils.kodidb.movies(sort=kodi_constants.SORT_LASTPLAYED,
+                                                     filters=filters,
+                                                     limits=(0, self.options["limit"]))
+        all_items += self.metadatautils.process_method_on_list(
+            self.tvshows.process_tvshow,
+            self.metadatautils.kodidb.tvshows(sort=kodi_constants.SORT_LASTPLAYED,
+                                              filters=filters + [kodi_constants.FILTER_INPROGRESS],
+                                              filtertype="or",
+                                              limits=(0, self.options["limit"])))
+        return sorted(all_items, key=lambda k: random.random())[:self.options["limit"]]
+
+    def randomshowsandmovies(self):
+        """ get random tv shows and movies """
+        all_items = self.movies.random()
+        all_items += self.tvshows.random()
+        return sorted(all_items, key=lambda k: random.random())[:self.options["limit"]]
+
     def random(self):
         ''' get random media '''
         all_items = self.movies.random()
@@ -162,6 +250,12 @@ class Media(object):
         all_items += self.tvshows.similar()
         all_items += self.albums.similar()
         all_items += self.songs.similar()
+        return sorted(all_items, key=lambda k: random.random())[:self.options["limit"]]
+
+    def similarshowsandmovies(self):
+        ''' get similar movies and similar tvshows for given imdbid'''
+        all_items = self.movies.similar()
+        all_items += self.tvshows.similar()
         return sorted(all_items, key=lambda k: random.random())[:self.options["limit"]]
 
     def inprogressandrecommended(self):
@@ -197,6 +291,34 @@ class Media(object):
     def favourite(self):
         '''synonym to favourites'''
         return self.favourites()
+
+    def forgenre(self):
+        """ get random movies and tv shows for given shared genre"""
+        genre = self.options.get("genre", "")
+        movie_genres = self.metadatautils.kodidb.genres("movie")
+        tvshow_genres = self.metadatautils.kodidb.genres("tvshow")
+        if not genre:
+            media_genres = []
+            for movie_genre in movie_genres:
+                for tvshow_genre in tvshow_genres:
+                    if movie_genre["label"] == tvshow_genre["label"]:
+                        media_genres.append(movie_genre["label"])
+                        break
+            if media_genres:
+                # get random genre from matched genres
+                genre = media_genres[randint(0, len(media_genres) - 1)]
+        all_items = []
+        if genre:
+            for item in self.tvshows.get_genre_tvshows(genre, self.options["hide_watched"], self.options["limit"]):
+                item["extraproperties"] = {"genretitle": genre, "originalpath": item["file"]}
+                all_items.append(item)
+            # proccess tvshows before adding movies
+            all_items = self.metadatautils.process_method_on_list(self.tvshows.process_tvshow, all_items)
+            for item in self.movies.get_genre_movies(genre, self.options["hide_watched"], self.options["limit"]):
+                item["extraproperties"] = {"genretitle": genre, "originalpath": item["file"]}
+                all_items.append(item)
+        # return the list sorted random capped by limit
+        return sorted(all_items, key=lambda k: random.random())[:self.options["limit"]]
 
     def get_recently_watched_item(self):
         ''' get a random recently watched movie or tvshow '''
