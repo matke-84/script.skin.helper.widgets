@@ -231,7 +231,7 @@ class Episodes(object):
         ''' get all next airing episodes for shows in the library - provided by tvdb module'''
         self.metadatautils.thetvdb.days_ahead = days_ahead
 
-        filters = [kodi_constants.FILTER_UNWATCHED]
+        filters = [{"operator": "lessthan", "field": "playcount", "value": ""}]
         if self.options["next_inprogress_only"]:
             filters = [kodi_constants.FILTER_INPROGRESS]
         if self.options.get("tag"):
