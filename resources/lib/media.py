@@ -18,6 +18,7 @@ from resources.lib.pvr import Pvr
 from resources.lib.albums import Albums
 from resources.lib.episodes import Episodes
 from datetime import date
+from random import randint
 
 class Media(object):
     '''all media (mixed) widgets provided by the script'''
