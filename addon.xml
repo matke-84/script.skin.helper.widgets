@@ -16,13 +16,8 @@
         <summary lang="en">Ready to use widgets for all kind of media types</summary>
         <description></description>
 	<news>
-Version 1.1.0
-* Initial release
-Version 1.1.1
-* Bug fixes
-Version 1.1.2
-* New lists
-* Bug fixes
+Version 1.3.0
+* Nexus version
 </news>
 		<assets>
             <icon>icon.png</icon>
