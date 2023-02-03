@@ -11,10 +11,7 @@ import os, sys
 from resources.lib.utils import create_main_entry
 from operator import itemgetter
 import xbmc
-if sys.version_info.major == 3:
-    from urllib.parse import quote_plus
-else:
-    from urllib import quote_plus
+from urllib.parse import quote_plus
 
 
 class Pvr(object):
@@ -91,10 +88,7 @@ class Pvr(object):
         if xbmc.getCondVisibility("Pvr.HasTVChannels"):
             # Get a list of all the unwatched tv recordings
             recordings = self.metadatautils.kodidb.recordings()
-            if sys.version_info.major == 3:
-                pvr_backend = xbmc.getInfoLabel("Pvr.BackendName")
-            else:
-                pvr_backend = xbmc.getInfoLabel("Pvr.BackendName").decode("utf-8")
+            pvr_backend = xbmc.getInfoLabel("Pvr.BackendName")
             for item in recordings:
                 # exclude live tv items from recordings list (mythtv workaround)
                 if not ("mythtv" in pvr_backend.lower() and "/livetv/" in item.get("file", "").lower()):
@@ -165,7 +159,10 @@ class Pvr(object):
         if not channellogo:
             channellogo = self.metadatautils.get_channellogo(channelname)
         if channellogo:
-            item["art"] = {"thumb": channellogo}
+            if not item.get("art"):
+                item["art"] = {}
+            if not item["art"].get("thumb"):
+                item["art"]["thumb"] = channellogo
         item["channellogo"] = channellogo
         item["isFolder"] = False
         return item
@@ -176,7 +173,7 @@ class Pvr(object):
             self.metadatautils.extend_dict(item, self.metadatautils.get_pvr_artwork(item["title"], item["channel"]))
         item["type"] = "recording"
         item["channellogo"] = self.metadatautils.get_channellogo(item["channel"])
-        item["file"] = u"plugin://script.skin.helper.service?action=playrecording&recordingid=%s"\
+        item["file"] = "plugin://script.skin.helper.service?action=playrecording&recordingid=%s"\
             % (item["recordingid"])
         item["dateadded"] = item["endtime"].split(" ")[0]
         if item["resume"].get("position"):
@@ -203,5 +200,11 @@ class Pvr(object):
         if self.enable_artwork:
             self.metadatautils.extend_dict(item, self.metadatautils.get_pvr_artwork(item["title"], item["channel"]))
         item["type"] = "recording"
-        item["channellogo"] = self.metadatautils.get_channellogo(item["channel"])
+        channellogo = self.metadatautils.get_channellogo(channelname)
+        if channellogo:
+            if not item.get("art"):
+                item["art"] = {}
+            if not item["art"].get("thumb"):
+                item["art"]["thumb"] = channellogo
+        item["channellogo"] = channellogo
         return item
