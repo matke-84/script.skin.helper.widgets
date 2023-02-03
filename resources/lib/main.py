@@ -8,10 +8,7 @@
 '''
 
 import os, sys
-if sys.version_info.major == 3:
-    import urllib.parse as urlparse
-else:
-    import urlparse
+import urllib.parse as urlparse
 import random
 import xbmcplugin
 import xbmc
@@ -58,10 +55,7 @@ class Main(object):
     def get_options(self):
         '''get the options provided to the plugin path'''
 
-        if sys.version_info.major == 3:
-            options = dict(urlparse.parse_qsl(sys.argv[2].replace('?', '').lower()))
-        else:
-            options = dict(urlparse.parse_qsl(sys.argv[2].replace('?', '').lower().decode("utf-8")))
+        options = dict(urlparse.parse_qsl(sys.argv[2].replace('?', '').lower()))
 
         # set the widget settings as options
         options["hide_watched"] = self.addon.getSetting("hide_watched") == "true"
