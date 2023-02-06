@@ -271,9 +271,9 @@ class Media(object):
     def inprogressandrandom(self):
         ''' get in progress AND random movies '''
         all_items = self.inprogress()
-        all_ids = [item["movieid"] for item in all_items]
+        all_ids = [item["title"] for item in all_items]
         for item in self.random():
-            if item["movieid"] not in all_ids:
+            if item["title"] not in all_ids:
                 all_items.append(item)
         return all_items[:self.options["limit"]]
 
