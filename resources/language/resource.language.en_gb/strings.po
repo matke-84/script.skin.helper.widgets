@@ -297,7 +297,7 @@ msgid "Recently played TV channels"
 msgstr ""
 
 msgctxt "#32070"
-msgid "In progress TV Shows and Movies"
+msgid "In progress Episodes and Movies"
 msgstr ""
 
 msgctxt "#32071"
