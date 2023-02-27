@@ -43,7 +43,7 @@ class Media(object):
         '''main listing with all our movie nodes'''
         all_items = [
             (self.addon.getLocalizedString(32011), "inprogress&mediatype=media", "DefaultMovies.png"),
-            (self.addon.getLocalizedString(32070), "inprogressshowsandmovies&mediatype=media", "DefaultMovies.png"),
+            (self.addon.getLocalizedString(32070), "inprogressepisodesandmovies&mediatype=media", "DefaultMovies.png"),
             (self.addon.getLocalizedString(32007), "inprogressandrecommended&mediatype=media", "DefaultMovies.png"),
             (self.addon.getLocalizedString(32060), "inprogressandrandom&mediatype=media", "DefaultMovies.png"),
             (self.addon.getLocalizedString(32005), "recent&mediatype=media", "DefaultMovies.png"),
@@ -239,7 +239,7 @@ class Media(object):
         all_items += self.pvr.recordings()
         return sorted(all_items, key=itemgetter("lastplayed"), reverse=True)[:self.options["limit"]]
 
-    def inprogressshowsandmovies(self):
+    def inprogressepisodesandmovies(self):
         ''' get in progress media '''
         all_items = self.movies.inprogress()
         all_items += self.episodes.inprogress()
